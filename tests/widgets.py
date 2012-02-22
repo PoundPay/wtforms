@@ -26,6 +26,7 @@ class HTMLParamsTest(TestCase):
         self.assertEqual(html_params(class_='foo'), u'class="foo"')
         self.assertEqual(html_params(class__='foo'), u'class_="foo"')
         self.assertEqual(html_params(for_='foo'), u'for="foo"')
+        self.assertEqual(html_params(extra={'data-dash': 'foo'}), u'data-dash="foo"')
 
 
 class ListWidgetTest(TestCase):

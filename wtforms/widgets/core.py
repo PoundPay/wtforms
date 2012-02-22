@@ -24,7 +24,9 @@ def html_params(**kwargs):
     for k,v in sorted(kwargs.iteritems()):
         if k in ('class_', 'class__', 'for_'):
             k = k[:-1]
-        if v is True:
+        if k == 'extra':
+            params.append(html_params(**v))
+        elif v is True:
             params.append(k)
         else:
             params.append(u'%s="%s"' % (unicode(k), escape(unicode(v), quote=True)))
