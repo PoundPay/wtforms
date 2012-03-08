@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import platform
+import sys
 
 from datetime import date, datetime
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
@@ -11,7 +11,7 @@ from wtforms.fields import Label, Field
 from wtforms.form import Form
 
 
-PYTHON_VERSION = tuple(int(x) for x in platform.python_version_tuple())
+PYTHON_VERSION = sys.version_info 
 
 class DummyPostData(dict):
     def getlist(self, key):
@@ -55,7 +55,7 @@ class LabelTest(TestCase):
         self.assertEqual(label().__html__(), expected)
         self.assertEqual(label(u'hello'), u"""<label for="test">hello</label>""")
         self.assertEqual(TextField(u'hi').bind(Form(), 'a').label.text, u'hi')
-        if PYTHON_VERSION < (3, 0, 0):
+        if PYTHON_VERSION < (3, ):
             self.assertEqual(repr(label), "Label('test', u'Caption')") 
         else:
             self.assertEqual(repr(label), "Label('test', 'Caption')") 
@@ -217,6 +217,14 @@ class SelectFieldTest(TestCase):
         self.assert_(isinstance(first_option.widget, widgets.Option))
         self.assert_(isinstance(list(form.b)[0].widget, widgets.TextInput))
         self.assertEqual(first_option(disabled=True), u'<option disabled selected value="a">hello</option>')
+
+    def test_default_coerce(self):
+        F = make_form(a=SelectField(choices=[('a', 'Foo')]))
+        form = F(DummyPostData(a=[]))
+        assert not form.validate()
+        self.assertEqual(form.a.data, u'None')
+        self.assertEqual(len(form.a.errors), 1)
+        self.assertEqual(form.a.errors[0], 'Not a valid choice')
 
 
 class SelectMultipleFieldTest(TestCase):
@@ -472,7 +480,7 @@ class DateTimeFieldTest(TestCase):
         self.assert_(u'not match format' in form.a.errors[0])
 
     def test_microseconds(self):
-        if PYTHON_VERSION < (2, 6, 0):
+        if PYTHON_VERSION < (2, 6):
             return # Microsecond formatting support was only added in 2.6
 
         d = datetime(2011, 5, 7, 3, 23, 14, 424200)
