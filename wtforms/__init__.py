@@ -14,4 +14,4 @@ from wtforms.form import Form
 from wtforms.validators import ValidationError
 from wtforms.fields import html5
 
-__version__ = '0.6.4dev'
+__version__ = '1.0.2dev'
