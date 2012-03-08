@@ -12,5 +12,6 @@ from wtforms import validators, widgets
 from wtforms.fields import *
 from wtforms.form import Form
 from wtforms.validators import ValidationError
+from wtforms.fields import html5
 
 __version__ = '0.6.4dev'
